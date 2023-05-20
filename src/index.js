@@ -1,6 +1,8 @@
 const express = require('express');
+const { loginValidation } = require('./middleWares/middleWares');
 const { readData, readById } = require('./utils/fcUtils');
 const { creatToken } = require('./utils/token');
+
 const e = require('express');
 
 const app = express();
@@ -37,7 +39,7 @@ app.get('/talker/:id', async (req, res) => {
 }
 );
 
-app.post('/login', (_req, res) => {
+app.post('/login',loginValidation, (_req, res) => {
   const token = creatToken(16);
   res.status(200).json({ token });
 }
