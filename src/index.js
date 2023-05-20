@@ -3,8 +3,6 @@ const { loginValidation } = require('./middleWares/middleWares');
 const { readData, readById } = require('./utils/fcUtils');
 const { creatToken } = require('./utils/token');
 
-const e = require('express');
-
 const app = express();
 app.use(express.json());
 
@@ -22,25 +20,21 @@ app.listen(PORT, () => {
 app.get('/talker', async (_req, res) => {
   const data = await readData();
   if (!data) {
-    return res.status(200).send([])
-  } else {
+    return res.status(200).send([]);
+  } 
   return res.status(HTTP_OK_STATUS).json(data);
-  }
 });
 
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const data = await readById(id);
    if (!data) {
-   return res.status(404).json({ message: 'Pessoa palestrante não encontrada' })
-   } else {
-    res.status(HTTP_OK_STATUS).json(data);
-    }
-}
-);
+   return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+   } 
+    return res.status(HTTP_OK_STATUS).json(data);
+});
 
-app.post('/login',loginValidation, (_req, res) => {
+app.post('/login', loginValidation, (_req, res) => {
   const token = creatToken(16);
   res.status(200).json({ token });
-}
-);
+});

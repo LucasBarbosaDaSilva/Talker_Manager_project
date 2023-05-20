@@ -2,7 +2,7 @@ function creatToken(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let token = '';
   
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < length; i += 1) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     token += characters[randomIndex];
   }
@@ -11,5 +11,5 @@ function creatToken(length) {
 }
 
 module.exports = {
-  creatToken
-}
+  creatToken,
+};

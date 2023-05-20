@@ -23,8 +23,6 @@ async function readById(id) {
   }
 } 
 
-
-
 module.exports = {
   readData,
   readById,
