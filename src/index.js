@@ -1,6 +1,6 @@
 const express = require('express');
-const fs = require('fs');
 const { readData, readById } = require('./utils/fcUtils');
+const { creatToken } = require('./utils/token');
 const e = require('express');
 
 const app = express();
@@ -19,7 +19,11 @@ app.listen(PORT, () => {
 
 app.get('/talker', async (_req, res) => {
   const data = await readData();
-  res.status(HTTP_OK_STATUS).json(data) || [];
+  if (!data) {
+    return res.status(200).send([])
+  } else {
+  return res.status(HTTP_OK_STATUS).json(data);
+  }
 });
 
 app.get('/talker/:id', async (req, res) => {
@@ -30,5 +34,11 @@ app.get('/talker/:id', async (req, res) => {
    } else {
     res.status(HTTP_OK_STATUS).json(data);
     }
+}
+);
+
+app.post('/login', (_req, res) => {
+  const token = creatToken(16);
+  res.status(200).json({ token });
 }
 );
