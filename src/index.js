@@ -1,9 +1,13 @@
 const express = require('express');
-const crypto = require('../node_modules/crypto-random-string');
-const { loginValidation, tokenValidation, validateName, validateAge, validateTalk } = require('./middleWares/middleWares');
-const { readData, readById } = require('./utils/fcUtils');
-const { creatToken } = require('./utils/token');
 const fs = require('fs').promises;
+const crypto = require('../node_modules/crypto-random-string');
+const { loginValidation, 
+  tokenValidation, 
+  validateName, 
+  validateAge,
+  validateWatchedAt,
+  validateTalk } = require('./middleWares/middleWares');
+const { readData, readById } = require('./utils/fcUtils');
 
 const app = express();
 app.use(express.json());
@@ -36,7 +40,9 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(HTTP_OK_STATUS).json(data);
 });
 
-app.post('/talker', tokenValidation, validateAge, validateName, validateTalk, async (req, res) => {
+app.post('/talker', tokenValidation, 
+validateAge, validateName, 
+ validateTalk, validateWatchedAt, async (req, res) => {
   const jsonContent = await readData();
     req.body.id = jsonContent.length + 1;
     jsonContent.push(req.body);
@@ -44,8 +50,6 @@ app.post('/talker', tokenValidation, validateAge, validateName, validateTalk, as
     res.status(201).json(req.body);
 });
   
-
-
 app.post('/login', loginValidation, (_req, res) => {
   res.status(HTTP_OK_STATUS).json({ token: crypto(16) });
 });
