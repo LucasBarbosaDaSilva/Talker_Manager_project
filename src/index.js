@@ -1,7 +1,9 @@
 const express = require('express');
-const { loginValidation } = require('./middleWares/middleWares');
+const crypto = require('../node_modules/crypto-random-string');
+const { loginValidation, tokenValidation, validateName, validateAge, validateTalk } = require('./middleWares/middleWares');
 const { readData, readById } = require('./utils/fcUtils');
 const { creatToken } = require('./utils/token');
+const fs = require('fs').promises;
 
 const app = express();
 app.use(express.json());
@@ -19,10 +21,10 @@ app.listen(PORT, () => {
 
 app.get('/talker', async (_req, res) => {
   const data = await readData();
-  if (!data) {
-    return res.status(200).send([]);
+  if (!data || data.length === 0) {
+    return res.status(HTTP_OK_STATUS).json([]);
   } 
-  return res.status(HTTP_OK_STATUS).json(data);
+  res.status(HTTP_OK_STATUS).json(data);
 });
 
 app.get('/talker/:id', async (req, res) => {
@@ -34,7 +36,16 @@ app.get('/talker/:id', async (req, res) => {
     return res.status(HTTP_OK_STATUS).json(data);
 });
 
+app.post('/talker', tokenValidation, validateAge, validateName, validateTalk, async (req, res) => {
+  const jsonContent = await readData();
+    req.body.id = jsonContent.length + 1;
+    jsonContent.push(req.body);
+    await fs.writeFile('src/talker.json', JSON.stringify(jsonContent));
+    res.status(201).json(req.body);
+});
+  
+
+
 app.post('/login', loginValidation, (_req, res) => {
-  const token = creatToken(16);
-  res.status(200).json({ token });
+  res.status(HTTP_OK_STATUS).json({ token: crypto(16) });
 });

@@ -1,13 +1,7 @@
-function creatToken(length) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let token = '';
-  
-  for (let i = 0; i < length; i += 1) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    token += characters[randomIndex];
-  }
-  
-  return token;
+const crypto = require('crypto');
+
+function creatToken(size) {
+  return crypto.randomBytes(size).toString('hex');
 }
 
 module.exports = {
