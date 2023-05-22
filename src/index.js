@@ -49,6 +49,21 @@ validateAge, validateName,
     await fs.writeFile('src/talker.json', JSON.stringify(jsonContent));
     res.status(201).json(req.body);
 });
+
+app.put('/talker/:id', tokenValidation,
+  validateAge, validateName,
+  validateTalk, validateWatchedAt, async (req, res) => {
+  const { id } = req.params;
+  const jsonContent = await readData();
+  const index = jsonContent.findIndex((talker) => talker.id === Number(id));
+  if (index === -1) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+  const newTalker = { id: Number(id), ...req.body };
+  jsonContent[index] = newTalker;
+  await fs.writeFile('src/talker.json', JSON.stringify(jsonContent));
+  res.status(200).json(newTalker);
+});
   
 app.post('/login', loginValidation, (_req, res) => {
   res.status(HTTP_OK_STATUS).json({ token: crypto(16) });
