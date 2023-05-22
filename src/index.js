@@ -31,6 +31,19 @@ app.get('/talker', async (_req, res) => {
   res.status(HTTP_OK_STATUS).json(data);
 });
 
+app.get('/talker/search', tokenValidation, async (req, res) => {
+  const { q } = req.query;
+  const data = await readData();
+  if (!q) {
+    return res.status(HTTP_OK_STATUS).json(data);
+  }
+  const result = data.filter((talker) => talker.name.includes(q));
+  if (result.length === 0) {
+    return res.status(HTTP_OK_STATUS).json([]);
+  }
+  return res.status(HTTP_OK_STATUS).json(result);
+});
+
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const data = await readById(id);
@@ -63,6 +76,18 @@ app.put('/talker/:id', tokenValidation,
   jsonContent[index] = newTalker;
   await fs.writeFile('src/talker.json', JSON.stringify(jsonContent));
   res.status(200).json(newTalker);
+});
+
+app.delete('/talker/:id', tokenValidation, async (req, res) => {
+  const { id } = req.params;
+  const jsonContent = await readData();
+  const index = jsonContent.findIndex((talker) => talker.id === Number(id));
+  if (index === -1) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+  jsonContent.splice(index, 1);
+  await fs.writeFile('src/talker.json', JSON.stringify(jsonContent));
+  res.status(204).json();
 });
   
 app.post('/login', loginValidation, (_req, res) => {

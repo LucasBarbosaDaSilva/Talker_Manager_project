@@ -23,20 +23,6 @@ async function readById(id) {
   }
 } 
 
-// async function writeData(data) {
-//   try {
-//     const oldData = await readData();
-//     const newDataWithId = { id: oldData.length + 1, ...data };
-//     const allData = [...oldData, newDataWithId];
-
-//     await fs.writeFile('src/data/talker.json', JSON.stringify(allData), 'utf-8');
-//     return newDataWithId;
-    
-//   } catch (error) {
-//     console.error(`Erro ao escrever no arquivo: ${error}`);
-//   }
-// }
-
 module.exports = {
   readData,
   readById,
